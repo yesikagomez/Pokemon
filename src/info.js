@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Main                 from './App';
 
-const NUM_OF_POKEMONS     = 27; // número de pokemons que queremos
-const POKEMONS_URL        = 'https://pokeapi.co/api/v2/pokemon/'; // URL base para cada Pokemon
-const SPECIES_URL         = 'https://pokeapi.co/api/v2/pokemon-species/'; // URL base de species, para determinar cadena evolutiva
+const numero_pokemones    = 24; 
+const pokemonesurl        = 'https://pokeapi.co/api/v2/pokemon/';
+const especiesurl       = 'https://pokeapi.co/api/v2/pokemon-species/';
 let   requestedPokemons   = []; // este array es creado para registrar todas las peticiones de pokemons hechas a la API
 let   requestedSpecies    = []; // este array es creado para registrar todas las peticiones de species hechas a la API
 let   evolutionsData      = [];
@@ -31,7 +31,7 @@ class info extends Component {
     .catch( error => this.setState({ error }) ); // gestiona los errores alterando la propiedad error en el state
 
     Promise.all( requestedSpecies ) // las tareas abajo solo son cumplidas cuando todas las Promesas (peticiones) son resolvidas (cuando ya tenemos sus valores)
-    .then( speciesData => { this.manageSpecies( speciesData ) }) // llama al método createPokemonObject pasando todo el listado de pokemons
+    .then( especiesData => { this.manageSpecies( especiesData ) }) // llama al método createPokemonObject pasando todo el listado de pokemons
     .catch( error => this.setState({ error }) ); // gestiona los errores alterando la propiedad error en el state
   }
 
@@ -42,17 +42,17 @@ class info extends Component {
 
   catchPokemons = () => {
 
-    for(let i = 1 ; i <= NUM_OF_POKEMONS; i++) {
-      const QUERY = i;
-      requestedPokemons.push( this.fetchData(`${POKEMONS_URL}${QUERY}/`) ); // cada petición está siendo guardada no array requests, y genera una Promesa
-      requestedSpecies.push( this.fetchData(`${SPECIES_URL}${QUERY}/`) ); // lo mismo
+    for(let i = 1 ; i <= numero_pokemones; i++) {
+      const id = i;
+      requestedPokemons.push( this.fetchData(`${pokemonesurl}${id}/`) );
+      requestedSpecies.push( this.fetchData(`${especiesurl}${id}/`) ); 
     }
   }
 
   createPokemonObject = pokemonData => {
     let pokeList   = [];
 
-    for ( const pokemon of pokemonData ) { // crea un objecto para cada pokemon con solo las informaciones necesarias
+    for ( const pokemon of pokemonData ) { 
       let sprites = [];
 
       sprites.push( pokemon.sprites['front_default'] );
@@ -68,10 +68,6 @@ class info extends Component {
           height    : pokemon.height / 10,
           weight    : pokemon.weight / 10,
           abilities : pokemon.abilities.map( typeObject => typeObject.ability.name ),
-          speed     : pokemon.stats[0].base_stat,
-          defense   : pokemon.stats[3].base_stat,
-          attack    : pokemon.stats[4].base_stat,
-          hp        : pokemon.stats[5].base_stat,
           photo     : sprites
         }
       ];
@@ -83,20 +79,20 @@ class info extends Component {
     });
   }
 
-  manageSpecies = speciesData => {
-    let evolutionChains = [];
+  manageSpecies = especiesData => {
+    let evoluciones = [];
 
-    for ( const _thisSpecies of speciesData ) {
-      evolutionChains.push( _thisSpecies.evolution_chain.url )
+    for ( const especies of especiesData ) {
+      evoluciones.push( especies.evolution_chain.url )
     }
-    evolutionChains = [ ...new Set( evolutionChains ) ];
-    this.catchEvolutions( evolutionChains );
+    evoluciones = [ ...new Set( evoluciones ) ];
+    this.catchEvolutions( evoluciones );
   }
 
-  catchEvolutions = evolutionChains => {
+  catchEvolutions = evoluciones => {
     let requestedEvolutions = []; // este array es creado para registrar todas las peticiones de evolución hechas a la API
 
-    for( const URI of evolutionChains ) {
+    for( const URI of evoluciones ) {
       requestedEvolutions.push( this.fetchData( URI ) ); // cada petición está siendo guardada no array requestedPokemons, y genera una Promesa
     }
 
@@ -245,7 +241,7 @@ class info extends Component {
 
   render() {
 
-	const { pokeList: myPokeList, filteredPokeList, evolutions, receivedData, filterBy, error } = this.state;  // ES6 Destructuring: se está definiendo como variables las propiedades del State para que haga falta repetir "this.state" al llamarlas
+	const { pokeList: myPokeList, filteredPokeList, evolutions, filterBy } = this.state;  // ES6 Destructuring: se está definiendo como variables las propiedades del State para que haga falta repetir "this.state" al llamarlas
 
     return (
       <div className="App">

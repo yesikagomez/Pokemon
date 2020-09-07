@@ -10,10 +10,7 @@ class DetallePokemon extends React.Component {
 
     this.state = {
       pokemon                : null,
-      evolution              : null,
-      filteredPokemonsIds    : [],
-      pokemonPositionOnArray : 0,
-      nextPokemons           : []
+      evolution              : null
     }
   };
 
@@ -32,20 +29,8 @@ class DetallePokemon extends React.Component {
 
   selectFilteredPokemon = action => {
     const { pokemon, filteredPokemonsIds } = this.state;
-
     let activePokemon = Number( pokemon.id );
-    let nextPokemon;
-
     activePokemon = filteredPokemonsIds.indexOf( activePokemon );
-
-    if ( action === 'back' ) {
-      nextPokemon = activePokemon - 1;
-    } else {
-      nextPokemon = activePokemon + 1;
-    }
-
-    nextPokemon = filteredPokemonsIds[nextPokemon];
-    this.selectPokemon( nextPokemon );
   }
 
   selectPokemonOnEvolutionChain = id => {
@@ -60,15 +45,12 @@ class DetallePokemon extends React.Component {
 
     let filteredPokemonsIds    = [];
     let pokemonPositionOnArray = 0;
-    let nextPokemons           = [];
 
     for ( const _thisFilteredPokemon of filteredPokeList ) {
       filteredPokemonsIds.push( _thisFilteredPokemon.id );
     }
 
     pokemonPositionOnArray = filteredPokemonsIds.indexOf( id );
-
-    nextPokemons.push(filteredPokemonsIds[pokemonPositionOnArray - 1], filteredPokemonsIds[pokemonPositionOnArray + 1] )
     for ( const _thisPokemon of pokeList ) {
       if ( _thisPokemon.id === id ) {
 
@@ -78,8 +60,7 @@ class DetallePokemon extends React.Component {
               pokemon                : _thisPokemon,
               evolution              : evolutions[_thisEvolution],
               filteredPokemonsIds,
-              pokemonPositionOnArray,
-              nextPokemons
+              pokemonPositionOnArray
             })
           }
         }
@@ -110,7 +91,7 @@ class DetallePokemon extends React.Component {
   }
 
   render () {
-    const { pokemon, evolution, filteredPokemonsIds, pokemonPositionOnArray, nextPokemons } = this.state;
+    const { pokemon, evolution} = this.state;
     const { filterBy } = this.props;
     return (
       <div className="container p-3 my-3 bg-dark text-white">
@@ -137,7 +118,7 @@ class DetallePokemon extends React.Component {
                     <th>
                     { evolution.to && evolution.to.lastEvolution &&
                     <Link to={ `${evolution.to.lastEvolution.id}` } className="text-decoration-none">
-                      <h5 onClick={ () => this.selectPokemonOnEvolutionChain( evolution.to.lastEvolution.id )}>  
+                      <h5 className="text-white"  onClick={ () => this.selectPokemonOnEvolutionChain( evolution.to.lastEvolution.id )}>  
                         <img src={ this.getCameFromPhoto(evolution.to.lastEvolution.id) } alt={ evolution.to.lastEvolution.species }/>
                         {evolution.to.lastEvolution ? evolution.to.lastEvolution.species.charAt(0).toUpperCase() + evolution.to.lastEvolution.species.substr(1) : null }
                       </h5>
@@ -147,7 +128,7 @@ class DetallePokemon extends React.Component {
                 <th>
                   { evolution.to &&
                   <Link to={ `${evolution.to.evolvesTo.id}` } className="noLinkStyle">
-                    <h5 onClick={ () => this.selectPokemonOnEvolutionChain( evolution.to.evolvesTo.id )}>
+                    <h5 className="text-white"  onClick={ () => this.selectPokemonOnEvolutionChain( evolution.to.evolvesTo.id )}>
                       <img  src={ this.getCameFromPhoto(evolution.to.evolvesTo.id) } alt={ evolution.to.evolvesTo.species }/>
                       { evolution.to.evolvesTo ? evolution.to.evolvesTo.species.charAt(0).toUpperCase() + evolution.to.evolvesTo.species.substr(1) : null }
                     </h5>
@@ -157,7 +138,7 @@ class DetallePokemon extends React.Component {
                 <th>
                   { evolution.from &&
                   <Link to={ `${evolution.from.cameFrom.id}` } className="noLinkStyle">
-                    <h5 onClick={ () => this.selectPokemonOnEvolutionChain( evolution.from.cameFrom.id )}>
+                    <h5 className="text-white" onClick={ () => this.selectPokemonOnEvolutionChain( evolution.from.cameFrom.id )}>
                       { evolution.from.cameFrom ? evolution.from.cameFrom.species.charAt(0).toUpperCase() + evolution.from.cameFrom.species.substr(1) : null }
                       <img  src={ this.getCameFromPhoto(evolution.from.cameFrom.id) } alt={ evolution.from.cameFrom.species }/>
                     </h5>
@@ -167,7 +148,7 @@ class DetallePokemon extends React.Component {
                 <th className="col">
                   { evolution.from && evolution.from.wasBorn &&
                     <Link to={ `${evolution.from.wasBorn.id}` }>
-                      <h5 onClick={ () => this.selectPokemonOnEvolutionChain( evolution.from.wasBorn.id ) }>
+                      <h5 className="text-white"  onClick={ () => this.selectPokemonOnEvolutionChain( evolution.from.wasBorn.id ) }>
                         { evolution.from.wasBorn ? evolution.from.wasBorn.species.charAt(0).toUpperCase() + evolution.from.wasBorn.species.substr(1) : null }
                         <img src={ this.getWasBornPhoto(evolution.from.wasBorn.id) } alt={ evolution.from.wasBorn.species }/>
                       </h5>

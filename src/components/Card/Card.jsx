@@ -1,7 +1,7 @@
 import React from 'react';
 import typeColors from '../../helpers/typeColors'
 import {Card, CardMedia, CardContent, Typography} from '@material-ui/core'
-import {withStyles } from '@material-ui/core/styles'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import '../../index.css';
 
@@ -10,7 +10,7 @@ function PokeCard({pokemon }) {
 
     return (
     <Card className="item">
-        <Link to= { `/detalle/${id} `}>
+        <Link to= { `/detalle/${id} `} >
             <CardMedia/>
                 <Typography className="id" variant="h4">{id}</Typography>
                 <img className="media"  src={ photo[0] } alt={ name } />
